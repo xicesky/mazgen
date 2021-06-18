@@ -1,21 +1,24 @@
 plugins {
     id 'java'
+    id 'application'
+    //id 'org.jetbrains.intellij'
 }
 
-group 'de.markusdangl.mazegen'
-version '1.0-SNAPSHOT'
+group = 'de.markusdangl.mazegen'
+version = '1.0-SNAPSHOT'
 sourceCompatibility = '15'
 
 repositories {
     mavenCentral()
 }
-sourceSets {
-    main {
-        java {
-            srcDirs = ['src']
-        }
-    }
-}
+
 dependencies {
-    testImplementation 'junit:junit'
+    implementation 'org.jetbrains:annotations:16.0.1'
+    //implementation group: 'com.google.guava', name: 'guava', version: '30.1.1-jre'
+
+    testImplementation 'junit:junit:4.13'
+}
+
+application {
+    mainClass = 'de.markusdangl.mazegen.Main'
 }
