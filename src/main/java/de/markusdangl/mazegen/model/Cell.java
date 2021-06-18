@@ -2,13 +2,18 @@ package de.markusdangl.mazegen.model;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * A single cell of the Maze.
+ *
+ * Each cell contains information about its own coordinates and neighbours
+ * (akin to a linked list), and which of the four walls exist.
+ */
 public class Cell {
 
     private final int x, y;
@@ -49,11 +54,22 @@ public class Cell {
         return walls;
     }
 
+    /**
+     * Checks whether a wall in a certain direction exists.
+     *
+     * @param direction The direction of the wall to check.
+     * @return true if the wall exists, false otherwise.
+     */
     public boolean hasWall(Direction direction) {
         Boolean wall = walls.get(direction);
-        return (wall != null && wall == Boolean.TRUE);
+        return wall == Boolean.TRUE;
     }
 
+    /**
+     * Breaks the wall in a certain direction.
+     *
+     * @param direction The direction of the wall to break.
+     */
     public void breakWall(Direction direction) {
         walls.put(direction, false);
 
@@ -70,26 +86,37 @@ public class Cell {
         return neighbours.get(direction);
     }
 
+    /**
+     * Streams all directions which have neighbouring cells.
+     * @return a Stream of directions to neighbouring cells.
+     */
     public Stream<Direction> streamNeighbourDirections() {
         return Direction.streamAll()
             .filter(direction -> neighbours.get(direction) != null);
     }
 
-    // FIXME doc
+    /**
+     * Aligns two cells by setting the appropriate neighbour properties.
+     *
+     * @param dimension The dimension in which to align the cells (HORIZONTAL, VERTICAL).
+     * @param lower The cell with the lower index (i.e. left or top cell).
+     * @param higher The cell with the higher index (i.e. right or bottom cell).
+     * @return The cell passed as the higher parameter.
+     */
     public static Cell align(
         @NotNull Dimension dimension,
         @NotNull Cell lower,
         @NotNull Cell higher
     ) {
         switch (dimension) {
-            case HORIZONTAL:
+            case HORIZONTAL -> {
                 lower.neighbours.put(Direction.RIGHT, higher);
                 higher.neighbours.put(Direction.LEFT, lower);
-                break;
-            case VERTICAL:
+            }
+            case VERTICAL -> {
                 lower.neighbours.put(Direction.DOWN, higher);
                 higher.neighbours.put(Direction.UP, lower);
-                break;
+            }
         }
         return higher;
     }

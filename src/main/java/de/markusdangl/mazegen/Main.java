@@ -2,8 +2,6 @@ package de.markusdangl.mazegen;
 
 import de.markusdangl.mazegen.generator.Generator;
 import de.markusdangl.mazegen.model.Cell;
-import de.markusdangl.mazegen.model.Direction;
-import de.markusdangl.mazegen.model.Maze;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +28,8 @@ public class Main {
 //        maze.printAsciiMazeTo(System.out);
 
         try {
-            mazeDemo(5, 5);
+            mazeDemo(10,10);
+//            mazeDemo(5, 5);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,25 +41,28 @@ public class Main {
         BufferedReader reader = new BufferedReader(
             new InputStreamReader(System.in));
 
-        // Print initial maze
-        generator.getMaze().printAsciiMazeTo(System.out);
-        reader.readLine();
-
         // Execute step-by-step and show maze
-        while (generator.step()) {
+        do {
 
-            System.out.println();
-            System.out.println();
-            generator.getMaze().printAsciiMazeTo(System.out);
+            visualizeGenerator(generator);
             // reader.readLine();
 
             // Wait 500 ms
             try {
-                Thread.sleep(500);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 // Ignore
             }
-        }
+
+        } while (generator.step());
+
+        visualizeGenerator(generator);
+    }
+
+    public static void visualizeGenerator(Generator generator) {
+        System.out.println();
+        System.out.println();
+        generator.getMaze().printAsciiMazeTo(System.out);
     }
 
     public static void printCellProperties(Cell cell) {

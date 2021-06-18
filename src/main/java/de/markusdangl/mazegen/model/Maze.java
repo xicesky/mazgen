@@ -9,6 +9,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+/**
+ * Representation of a maze with breakable walls.
+ *
+ * This class presents a two-dimensional maze, which consists of
+ * cells (addressed by x/y coordinates) and walls between the cells
+ * which can either be present or absent.
+ */
 public class Maze {
 
     private final int width;
@@ -17,9 +24,10 @@ public class Maze {
     private final List<List<Cell>> field;
 
     public Maze(int width, int height) {
-        // FIXME throw proper exception
-        assert width > 0;
-        assert height > 0;
+        if (width <= 0 || height <= 0)  {
+            // FIXME Find or implement the proper exception class
+            throw new ArrayIndexOutOfBoundsException("Maze must have a minimum width and height of 1.");
+        }
 
         this.width = width;
         this.height = height;
@@ -27,7 +35,7 @@ public class Maze {
         /* Downcasting list elements:
             A classic flaw of the java generics type system
         */
-        this.field = new ArrayList<List<Cell>>(generateField(width, height));
+        this.field = new ArrayList<>(generateField(width, height));
     }
 
     @Override
@@ -77,18 +85,22 @@ public class Maze {
 
     public void printAsciiMazeTo(PrintStream out) {
         // Print upper and left wall of each cell
-        field.stream()
-            .forEach(row -> {
-                row.forEach(cell -> {
-                    out.printf("+%2s", cell.hasWall(Direction.UP) ? "--" : "  ");
-                });
-                out.println("+");
-                row.forEach(cell -> {
-                    out.printf("%s  ", cell.hasWall(Direction.LEFT) ? "|" : " ");
-                });
-                // Right wall of the last cell in the row
-                out.printf("%s\n", row.get(row.size() - 1).hasWall(Direction.RIGHT) ? "|" : " ");
+        field.forEach(row -> {
+
+            // First line representing top-down walls.
+            row.forEach(cell -> {
+                out.printf("+%2s", cell.hasWall(Direction.UP) ? "--" : "  ");
             });
+            out.println("+");
+
+            // Second line representing left-right walls.
+            row.forEach(cell -> {
+                out.printf("%s  ", cell.hasWall(Direction.LEFT) ? "|" : " ");
+            });
+
+            // Right wall of the last cell in the row
+            out.printf("%s\n", row.get(row.size() - 1).hasWall(Direction.RIGHT) ? "|" : " ");
+        });
 
         // Print lower walls of last row
         field.get(height-1)
@@ -99,6 +111,7 @@ public class Maze {
 
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static ArrayList<ArrayList<Cell>> generateField(int width, int height) {
         ArrayList<ArrayList<Cell>> field = IntStream.range(0, height)
             .mapToObj(y -> generateRow(y, width))
@@ -124,6 +137,7 @@ public class Maze {
         return field;
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static ArrayList<Cell> generateRow(int y, int width) {
         ArrayList<Cell> row = IntStream.range(0, width)
             .mapToObj(x -> new Cell(x, y))

@@ -21,23 +21,23 @@ public class CellRun {
     public CellRun() {
         this.least = null;
         this.greatest = null;
-        checkInvariant();
+        assert checkInvariant();
     }
 
     /**
      * Create a run from a single cell.
-     * @param single
+     * @param single The single cell to be present in the run.
      */
     public CellRun(Cell single) {
         this.least = single;
         this.greatest = single;
-        checkInvariant();
+        assert checkInvariant();
     }
 
     /**
      * Create a run of cells with a set least and upper bound.
-     * @param least
-     * @param greatest
+     * @param least The cell with the lowest index in the run.
+     * @param greatest The cell with the greatest index in the run.
      */
     protected CellRun(
         @NotNull Cell least,
@@ -45,7 +45,7 @@ public class CellRun {
     ) {
         this.least = least;
         this.greatest = greatest;
-        checkInvariant();
+        assert checkInvariant();
     }
 
     public boolean checkInvariant() {
@@ -57,12 +57,13 @@ public class CellRun {
     }
 
     /**
-     * Aligns two CellRuns by setting the neighbour properties of the cells.
+     * Aligns two CellRuns by setting the neighbour properties of the cells,
+     * for use with stream reduceby().
      *
      * @param dimension whether to align horizontally or vertically.
      * @param lower the lower (left / upper) of both runs
      * @param higher the higher (right / lower) of both runs
-     * @return
+     * @return the joint CellRun combining both inputs.
      */
     public static CellRun align(
         @NotNull Dimension dimension,

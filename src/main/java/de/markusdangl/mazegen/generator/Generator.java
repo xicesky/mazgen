@@ -6,8 +6,9 @@ import de.markusdangl.mazegen.model.Maze;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+
+import static de.markusdangl.mazegen.util.RandomUtils.selectRandomFrom;
 
 public class Generator {
 
@@ -24,10 +25,6 @@ public class Generator {
     private final Set<Cell> visited = new HashSet<>();
 
     public Generator(int width, int height) {
-        // FIXME throw proper exception
-        assert width > 0;
-        assert height > 0;
-
         this.maze = new Maze(width, height);
 
         // Always start at the upper left corner
@@ -88,7 +85,8 @@ public class Generator {
 
             if (currentCell == null) {
                 // We didn't find a cell with unvisited neighbours, done
-                return false;
+                stage = GeneratorStage.EXIT;
+                return true;
             } else {
 
                 // Select a random unvisited neighbour
@@ -117,18 +115,10 @@ public class Generator {
             .collect(Collectors.toList());
     }
 
-    // FIXME Utility method, should be moved to own class
-    public static <T> T selectRandomFrom(@NotNull List<T> list) {
-        assert list.size() > 0;
-        if (list.size() == 1)
-            return list.get(0);
-
-        int index = ThreadLocalRandom.current().nextInt(list.size());
-        return list.get(index);
-    }
-
+    @SuppressWarnings("StatementWithEmptyBody")
     public static Maze generateMaze(int width, int height) {
         Generator generator = new Generator(width, height);
+
         do {
             // Do nothing
         } while (generator.step());

@@ -5,7 +5,6 @@ public enum GeneratorStage {
     ENTRY,
     MAZE,
     EXIT,
-    DONE
-    ;
+    DONE,
 
 }
