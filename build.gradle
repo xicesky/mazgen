@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group 'de.markusdangl.mazegen'
+version '1.0-SNAPSHOT'
+sourceCompatibility = '15'
+
+repositories {
+    mavenCentral()
+}
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+}
+dependencies {
+    testImplementation 'junit:junit'
+}

@@ -1,0 +1,37 @@
+# Temporaries / backups / swapfiles...
+*~
+*.sw[pon]
+*.bak
+.DS_Store
+
+# Dummy directory used for system-local data
+/local
+
+# Gradle
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE: Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# IDE: IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# IDE: NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# IDE: VS Code
+.vscode/
+
