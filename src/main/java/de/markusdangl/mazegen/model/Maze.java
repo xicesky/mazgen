@@ -39,6 +39,14 @@ public class Maze {
             '}';
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public Cell get(int x, int y) {
         if (x < 0 || x >= width) {
             throw new ArrayIndexOutOfBoundsException("Maze x coordinate out of bounds.");

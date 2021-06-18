@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 
 public class Generator {
 
+    // Current stage of the generator
+    private GeneratorStage stage = GeneratorStage.ENTRY;
+
     // The maze being currently generated
     private final Maze maze;
 
@@ -44,12 +47,20 @@ public class Generator {
         return stack.peek();
     }
 
-    public static Maze generateMaze(int width, int height) {
-        Generator generator = new Generator(width, height);
-        while (generator.step()) {
-            // Do nothing
-        }
-        return generator.getMaze();
+    public boolean step() {
+        return switch (stage) {
+            case ENTRY -> stepGenerateEntry();
+            case MAZE -> stepGenerateMaze();
+            case EXIT -> stepGenerateExit();
+            case DONE -> false;
+        };
+    }
+
+    public boolean stepGenerateEntry() {
+        // Break the wall on the top left as an entry
+        maze.get(0, 0).breakWall(Direction.LEFT);
+        stage = GeneratorStage.MAZE;
+        return true;
     }
 
     /**
@@ -57,7 +68,7 @@ public class Generator {
      *
      * @return true if further steps may be required, false if finished.
      */
-    public boolean step() {
+    public boolean stepGenerateMaze() {
         if (stack.isEmpty()) {
             return false;
         } else {
@@ -69,7 +80,6 @@ public class Generator {
                 if (unvisitedDirections.size() == 0) {
                     stack.pop();
                     currentCell = stack.peek();
-                    continue;
                 } else {
                     // Current cell has unvisited neighbours
                     break;
@@ -93,6 +103,14 @@ public class Generator {
         return true;
     }
 
+    public boolean stepGenerateExit() {
+        // Break the wall on the bottom right as an exit
+        maze.get(maze.getWidth() - 1, maze.getHeight() - 1)
+            .breakWall(Direction.RIGHT);
+        stage = GeneratorStage.DONE;
+        return false;
+    }
+
     public List<Direction> unvisitedNeighbours(@NotNull Cell cell) {
         return cell.streamNeighbourDirections()
             .filter(direction -> !visited.contains(cell.getNeighbour(direction)))
@@ -107,6 +125,15 @@ public class Generator {
 
         int index = ThreadLocalRandom.current().nextInt(list.size());
         return list.get(index);
+    }
+
+    public static Maze generateMaze(int width, int height) {
+        Generator generator = new Generator(width, height);
+        do {
+            // Do nothing
+        } while (generator.step());
+
+        return generator.getMaze();
     }
 
 }
